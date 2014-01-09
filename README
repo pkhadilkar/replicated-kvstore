@@ -1,0 +1,3 @@
+Single Server Key Value Store:
+
+Single Server key value server in Go language. Current interface provides flat key value space with keys and values as strings. 
