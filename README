@@ -16,3 +16,4 @@ curl http://127.0.0.1/store/Swapnil
 curl http://127.0.0.1/store/Random+person
 curl -X DELETE http://127.0.0.1:9090/store/Random+person
 curl http://127.0.0.1:9090/store
+```
