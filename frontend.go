@@ -9,7 +9,7 @@ import (
 // Frontend module for single server key store
 
 func GetEntryHandler(w *rest.ResponseWriter, r *rest.Request){
-     key, err := url.QueryUnescape(r.PathParam("key"))
+     key, err := url.QueryUnescape(r.PathParam("Key"))
      if err != nil {
      	rest.Error(w, err.Error(), http.StatusInternalServerError)
      }
@@ -48,6 +48,14 @@ func PostEntryHandler(w *rest.ResponseWriter, r *rest.Request){
 }
 
 func DeleteEntryHandler(w *rest.ResponseWriter, r *rest.Request){
-     key := r.PathParam("key")
+     key, err := url.QueryUnescape(r.PathParam("Key"))
+	 if err != nil {
+     	rest.Error(w, err.Error(), http.StatusInternalServerError)
+     }
+	 _, ok := GetValue(key)
+     if !ok {
+     	rest.NotFound(w, r)
+		return
+     }
      DeleteEntry(key)
 }
