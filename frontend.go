@@ -18,11 +18,13 @@ func GetEntryHandler(w *rest.ResponseWriter, r *rest.Request){
      	rest.NotFound(w, r)
 	return
      }
+     w.Header().Set("Content-type", "application/json")
      w.WriteJson(&value)
 }
 
 func GetAllEntriesHandler(w *rest.ResponseWriter, r *rest.Request){
      entries := GetAllEntries()
+     w.Header().Set("Content-type", "application/json")
      w.WriteJson(entries)
 }
 
@@ -44,6 +46,7 @@ func PostEntryHandler(w *rest.ResponseWriter, r *rest.Request){
 	return
      }
      PutValue(&entry)
+     w.Header().Set("Content-type", "application/json")
      w.WriteJson(&entry)
 }
 
