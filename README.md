@@ -6,6 +6,12 @@ Single Server key value server in Go language. Current interface provides flat k
 Install
 -------
 To use the server, create an executable using "go install". Running this executable will create a server that listens on port 9090. 
+```
+$ go get github.com/pkhadilkar/kvstore
+$ go install github.com/pkhadilkar/kvstore	#this should create executable named kvstore (.exe on Windows)
+$ ./kvstore	#kvstore.exe on Windows
+```
+Requests can be submitted to server using JSON as shown in Examples.
 
 Types
 -----
@@ -13,7 +19,12 @@ The server supports two types string and integer (64 bits) as value types. Value
 
 Examples
 --------
-Following commands can be used to used test the functionality
+To automatically launch the sever and test sample functionality use
+```
+$ python test.py
+```
+
+Following commands can be used to used test individual features. Server should be launced manually as mentioned in the install before this.
 
 ```
 $ curl -d '{"Key": "Pushkar", "Value": "+91-9975627439"}' http://127.0.0.1:9090/store
