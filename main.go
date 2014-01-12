@@ -14,6 +14,8 @@ func main(){
 		rest.Route{"POST", "/store", PostEntryHandler},
 		rest.Route{"GET", "/store/:Key", GetEntryHandler},
 		rest.Route{"DELETE", "/store/:Key", DeleteEntryHandler},
+		rest.Route{"GET", "/store/incr/:Key", IncrEntryHandler},		//change this to UPDATE?
+		rest.Route{"GET", "/store/decr/:Key", DecrEntryHandler},
 		)
      http.ListenAndServe(":9090", &handler)
 }
