@@ -13,7 +13,7 @@ Following commands can be used to used test the functionality
 
 ```
 $ curl -d '{"Key": "Pushkar", "Value": "+91-9975627439"}' http://127.0.0.1:9090/store
-$ curl -d '{"Key": "Swapnil", "Value": "+91-9975946292"' http://127.0.0.1:9090/store
+$ curl -d '{"Key": "Swapnil", "Value": "+91-9975946292"}' http://127.0.0.1:9090/store
 $ curl -d '{"Key": "Random person", "Value": "+91-8679847479"}' http://127.0.0.1:9090/store
 $ curl http://127.0.0.1/store	  	   #displays all entries in key value store
 $ curl http://127.0.0.1/store/Pushkar
