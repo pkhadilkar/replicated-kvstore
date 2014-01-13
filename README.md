@@ -11,13 +11,13 @@ $ go get github.com/pkhadilkar/kvstore
 $ go install github.com/pkhadilkar/kvstore	#this should create executable named kvstore (.exe on Windows)
 $ ./kvstore	#kvstore.exe on Windows
 ```
-Requests can be submitted to server using JSON as shown in Examples.
+Requests can be submitted to server using JSON as shown in Examples. Note that this *only* starts the server. To test the server, please refer to examples section.
 
 Types
 -----
 The server supports two types string and integer (64 bits) as value types. Values of type integer have increment and decrement operation defined on them.
 
-Examples
+Examples / Test
 --------
 To automatically launch the sever and test sample functionality use
 ```
