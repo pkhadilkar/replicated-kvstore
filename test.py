@@ -33,9 +33,9 @@ executable_path = ""
 executable_name = ""
 
 if platform.system() == "Windows":
-    executable_name = "kvstore.exe"
+    executable_name = "sskv.exe"
 elif platform.system() == "Linux":
-    executable_name = "kvstore"
+    executable_name = "sskv"
 else:
     print "Unsupported platform:", platform.system()
     exit(1)
