@@ -11,7 +11,7 @@ $ go get github.com/pkhadilkar/kvstore
 $ go install github.com/pkhadilkar/kvstore	#this should create executable named kvstore (.exe on Windows)
 $ ./kvstore	#kvstore.exe on Windows
 ```
-Requests can be submitted to server using JSON as shown in Examples. Note that this **only** starts the server. To test the server, please refer to examples section.
+Requests can be submitted to server using JSON as shown in Examples. Note that this **only** starts the server. To test the server, please refer to [examples](#examples-test) section.
 
 Types
 -----
@@ -33,6 +33,7 @@ To automatically launch the sever and test sample functionality use
 ```
 $ python test.py
 ```
+test.py works only on Linux or Windows platform. To test on Mac OS X family, manually launch kvstore server and use tests in [API](#api).
 
 Following commands can be used to used test individual features. Server should be launced manually as mentioned in the install before this.
 
@@ -59,3 +60,4 @@ A simple Go API for accessing the key value store is provided in *client* packag
 $ cd $GOPATH/src/github.com/pkhadilkar/kvstore/client	#do this step if you are not already in client directory
 $ go test
 ```
+This assumes that server is already running.

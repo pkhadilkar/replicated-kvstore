@@ -59,3 +59,31 @@ func Delete(key string) error {
      return err
 }
 
+// returns decremented value and error (if any)
+func Decrement(key string) (string, error) {
+     var value Content
+     r, err := http.Get(serverBase + "/decr/" + url.QueryEscape(key))
+     defer r.Body.Close()
+     if err != nil {
+     	return value.Value, err
+     }
+
+     decoder := json.NewDecoder(r.Body)
+     decoder.Decode(&value)
+     return value.Value, err     
+}
+
+
+// returns incremented value and error (if any)
+func Increment(key string) (string, error) {
+     var value Content
+     r, err := http.Get(serverBase + "/incr/" + url.QueryEscape(key))
+     defer r.Body.Close()
+     if err != nil {
+     	return value.Value, err
+     }
+
+     decoder := json.NewDecoder(r.Body)
+     decoder.Decode(&value)
+     return value.Value, err     
+}
