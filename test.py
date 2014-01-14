@@ -8,7 +8,7 @@ import urllib, urllib2
 import httplib
 
 line_separator = "==============================="
-serverBase = "127.0.0.1:9090"
+serverBase = "localhost:9090"
 protocol = 'http://'
 appRoot = '/store'
 
@@ -42,6 +42,7 @@ else:
 
 
 executable_path = distutils.spawn.find_executable(executable_name)
+print "Executable path:", executable_path
 if executable_path == None :
     print "Please ensure that", executable_name, "is on system path variable"
     exit(1)
