@@ -82,6 +82,7 @@ print 'Delete data associated with key "Random person"'
 conn = httplib.HTTPConnection(serverBase)
 req = conn.request('DELETE', appRoot + '/' + urllib.quote_plus("Random person"))
 response = conn.getresponse()
+conn.close()
 print response.read()
 
 print line_separator

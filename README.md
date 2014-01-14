@@ -51,3 +51,11 @@ $ curl http://localhost:9090/store/counter    #original value
 $ curl http://localhost:9090/store/incr/counter 	#increment the value
 $ curl http://localhost:9090/store/counter		#display incremented value
 ```
+
+API 
+-----
+A simple Go API for accessing the key value store is provided in *client* package . To test the API
+```
+$ cd $GOPATH/src/github.com/pkhadilkar/kvstore/client	#do this step if you are not already in client directory
+$ go test
+```
