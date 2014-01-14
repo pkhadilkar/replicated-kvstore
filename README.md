@@ -31,6 +31,7 @@ Examples / Test
 --------
 To automatically launch the sever and test sample functionality use
 ```
+$ cd $GOPATH/src/github.com/pkhadilkar/kvstore
 $ python test.py
 ```
 test.py works only on Linux or Windows platform. To test on Mac OS X family, manually launch kvstore server and use tests in [API](#api).
