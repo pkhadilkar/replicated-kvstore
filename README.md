@@ -9,7 +9,7 @@ To use the server, create an executable using "go install". Running this executa
 ```
 $ go get github.com/pkhadilkar/kvstore
 $ go install github.com/pkhadilkar/kvstore	#this should create executable named kvstore (.exe on Windows)
-$ ./kvstore	#kvstore.exe on Windows
+$ /kvstore	#kvstore.exe on Windows
 ```
 Requests can be submitted to server using JSON as shown in Examples. Note that this **only** starts the server. To test the server, please refer to [examples](#examples-test) section.
 
