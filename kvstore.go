@@ -18,5 +18,7 @@ func main(){
 		rest.Route{"GET", "/store/incr/:Key", server.IncrEntryHandler},		//change this to UPDATE?
 		rest.Route{"GET", "/store/decr/:Key", server.DecrEntryHandler},
 		)
+     // initialize kvStore
+     server.Initialize()
      http.ListenAndServe(":9090", &handler)
 }

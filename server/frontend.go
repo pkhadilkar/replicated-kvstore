@@ -8,6 +8,10 @@ import (
 
 // Frontend module for single server key store
 
+func Initialize(){
+     token <- true
+}
+
 func GetEntryHandler(w *rest.ResponseWriter, r *rest.Request){
      key, err := url.QueryUnescape(r.PathParam("Key"))
      w.Header().Set("Content-type", "application/json")
