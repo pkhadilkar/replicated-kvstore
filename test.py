@@ -6,6 +6,7 @@ import distutils.spawn
 import json
 import urllib, urllib2
 import httplib
+import time
 
 line_separator = "==============================="
 serverBase = "localhost:9090"
@@ -48,6 +49,10 @@ if executable_path == None :
     exit(1)
 
 proc = subprocess.Popen([executable_path], stdout=open('server_output.log', 'w'))
+
+# wait for server to start up
+print "Waiting for server to start up ...."
+time.sleep(2)
 
 print "Running tests ...."
 print

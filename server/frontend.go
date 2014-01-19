@@ -8,17 +8,23 @@ import (
 
 // Frontend module for single server key store
 
-func Initialize(){
-     token <- true
+var s kvStore
+
+// Initialize method intializes internal data structures
+func Initialize() {
+     s.store = make(map[string]ValueWrapper, 100000)
+     s.token = make(chan bool, 1)
+     s.token <- true
 }
 
 func GetEntryHandler(w *rest.ResponseWriter, r *rest.Request){
      key, err := url.QueryUnescape(r.PathParam("Key"))
+     defer r.Body.Close()
      w.Header().Set("Content-type", "application/json")
      if err != nil {
      	rest.Error(w, err.Error(), http.StatusInternalServerError)
      }
-     value, ok := GetValue(key)
+     value, ok := s.GetValue(key)
      if !ok {
      	rest.NotFound(w, r)
 	return
@@ -27,13 +33,15 @@ func GetEntryHandler(w *rest.ResponseWriter, r *rest.Request){
 }
 
 func GetAllEntriesHandler(w *rest.ResponseWriter, r *rest.Request){
-     entries := GetAllEntries()
+     entries := s.GetAllEntries()
+     defer r.Body.Close()
      w.Header().Set("Content-type", "application/json")
      w.WriteJson(entries)
 }
 
 func PostEntryHandler(w *rest.ResponseWriter, r *rest.Request){
      entry := Entry{}
+     defer r.Body.Close()
      err := r.DecodeJsonPayload(&entry)
      w.Header().Set("Content-type", "application/json")
      if err != nil {
@@ -50,30 +58,32 @@ func PostEntryHandler(w *rest.ResponseWriter, r *rest.Request){
      	rest.Error(w, "Value should not be empty", http.StatusBadRequest)
 	return
      }
-     PutValue(&entry)
+     s.PutValue(&entry)
      w.WriteJson(&entry)
 }
 
 func DeleteEntryHandler(w *rest.ResponseWriter, r *rest.Request){
      key, err := url.QueryUnescape(r.PathParam("Key"))
+     defer r.Body.Close()
      if err != nil {
      	rest.Error(w, err.Error(), http.StatusBadRequest)
      }
-	 _, ok := GetValue(key)
+	 _, ok := s.GetValue(key)
      if !ok {
      	rest.NotFound(w, r)
 		return
      }
-     DeleteEntry(key)
+     s.DeleteEntry(key)
 }
 
 func IncrEntryHandler(w *rest.ResponseWriter, r *rest.Request){
      key, err := url.QueryUnescape(r.PathParam("Key"))
+     defer r.Body.Close()
      w.Header().Set("Content-type", "application/json")
      if(err != nil){
      	    rest.Error(w, err.Error(), http.StatusBadRequest)
      }
-     value, incErr := IncrEntry(key)
+     value, incErr := s.IncrEntry(key)
      if incErr != nil {
      	rest.Error(w, incErr.Error(), http.StatusPreconditionFailed)
      }
@@ -82,11 +92,12 @@ func IncrEntryHandler(w *rest.ResponseWriter, r *rest.Request){
 
 func DecrEntryHandler(w *rest.ResponseWriter, r *rest.Request){
      key, err := url.QueryUnescape(r.PathParam("Key"))
+     defer r.Body.Close()
      w.Header().Set("Content-type", "application/json")
      if(err != nil){
      	    rest.Error(w, err.Error(), http.StatusBadRequest)
      }
-     value, decErr := DecrEntry(key)
+     value, decErr := s.DecrEntry(key)
      if decErr != nil {
      	rest.Error(w, decErr.Error(), http.StatusPreconditionFailed)
      }

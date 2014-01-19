@@ -3,7 +3,12 @@ package client
 import (
        "testing"
        "fmt"
+       "sync"
+       "strconv"
+       "bytes"
+       "errors"
 )
+
 
 const lineseparator = "====================================="
 
@@ -77,4 +82,61 @@ func TestKvstoreClient(t *testing.T) {
     }
     fmt.Println("Incremented value for \"counter\" = ", value)
     fmt.Println(lineseparator)
+}
+
+const clients = 1000
+var w sync.WaitGroup
+
+
+// TestKvStoreStress runs a stress test to test performance
+// and consistency of kvstore. It launches 1000 clients
+// each of whom do 10 gets and 10 puts
+func TestKvStoreStress(t *testing.T) {
+      base := "client_id_"
+      // one error message per client
+      errChan := make(chan string, clients)
+      w.Add(clients)
+      for i := 0; i < clients; i += 1 {
+      	  go launchClient(base + strconv.Itoa(i), errChan)
+      }
+      var buffer bytes.Buffer
+      // check for error messages from one of the clients
+      select {
+      	     case msg, ok := <- errChan:
+	     	  if ok {
+		     for {
+		     	 buffer.WriteString(msg)
+			 msg, ok = <- errChan
+			 if !ok{
+			    break;
+			 }
+		     }
+		     // not very smart. Writes all error messages to console
+		     t.Errorf(buffer.String(), errors.New(buffer.String()))
+		  }
+	     default:
+		//no error detected
+      }
+      
+      w.Wait()
+} 
+
+func launchClient(id string, errChan chan <- string) {
+     defer w.Done()
+     for i := 0; i < 10; i += 1 {
+     	 key := id + "_"  + strconv.Itoa(i)
+	 value := key + "_value"
+     	 
+	 if err := Put(key, value); err != nil {
+	    errChan <- "Error in client " + id + "\n" + err.Error()
+	    return
+	 }
+	 
+	 if storedVal, err := Get(key); err != nil {
+	    errChan <- "Error in client " + id + "\n" + err.Error()
+	    return
+	 } else if value != storedVal {
+	   errChan <- "Error in client " + id + "\nStore value does not match required value";
+	 }
+     }
 }

@@ -1,3 +1,15 @@
+/*
+Package server contains a single server implementation of key value store. 
+Types:
+	* string (custom types can be encoded as their string representation)
+	* Integer (64 bit integer)
+Operations supported:
+	   * get
+	   * put
+	   * increment (only for Integer values)
+	   * decrement (only for Integer values)
+*/
+
 package server
 
 import (
@@ -5,8 +17,7 @@ import (
        "errors"
 )
 
-// Single Server Key value store implementation
-// Types
+// Entry type represents a key value store entry.
 type Entry struct{
      Key string
      Value string
@@ -16,33 +27,42 @@ type ValueWrapper struct{
      Value string
 }
 
-// constants
-const base = 10		// base for supported int type
-const integerBits = 64	// number of bits in the supported interger type
 
-// Simple Implementation: v1 Use a global HashMap
-var kvStore map[string]ValueWrapper = make(map[string]ValueWrapper, 100000)
+// base for supported int type
+const base = 10		
+// number of bits in the supported interger type
+const integerBits = 64	
 
 // synchronize accesses to map using channels
 // capacity 1 to ensure single map accessor
 // Ensure that server start process initializes
 // channel by writing a value
-var token chan bool = make(chan bool, 1)
 
-func GetValue(key string) (ValueWrapper, bool) {
-     lock()
-     defer unlock()
-     value, ok := kvStore[key]
+type kvStore struct {
+     store map[string]ValueWrapper
+     token chan bool
+}
+
+// GetValue gets a value from map for a given key. 
+// It returns false if key is not present and true otherwise.
+func (s *kvStore) GetValue(key string) (ValueWrapper, bool) {
+     s.lock()
+     defer s.unlock()
+     value, ok := s.store[key]
      return value, ok
 }
 
-
-func GetAllEntries() *[]*Entry {
-     entries := make([]*Entry, len(kvStore))
+// GetAllEntries returns all key value pairs in map
+// as a slice of Entry objects.
+// Deprecated: This method will be removed in future versions
+// as it is not scalable. A single call to this method
+// would block every other call on keystore
+func (s *kvStore)GetAllEntries() *[]*Entry {
+     entries := make([]*Entry, len(s.store))
      i := 0
-     lock()
-     defer unlock()
-     for key, value := range kvStore {
+     s.lock()
+     defer s.unlock()
+     for key, value := range s.store {
      	 entry := Entry{key, value.Value}
      	 entries[i] = &entry
 	 i += 1
@@ -52,32 +72,37 @@ func GetAllEntries() *[]*Entry {
 }
 
 
-
-func PutValue(e *Entry){
+// PutValue stores a given entry object in map
+func (s *kvStore)PutValue(e *Entry){
      value := ValueWrapper{e.Value}
-     lock()
-     defer unlock()
-     kvStore[e.Key] = value
+     s.lock()
+     defer s.unlock()
+     s.store[e.Key] = value
+}
+// DeleteEntry deletes entry for a given key from kvstore
+func (s *kvStore) DeleteEntry(key string){
+     s.lock()
+     defer s.unlock()
+     delete(s.store, key)
 }
 
-func DeleteEntry(key string){
-     lock()
-     defer unlock()
-     delete(kvStore, key)
+// lock method allows only one thread to operate on map
+// at a time. Other concurrent threads block.
+func (s *kvStore) lock(){
+	<- s.token
 }
 
-func lock(){
-	<- token
+// unlock method releases lock
+func (s *kvStore) unlock(){
+     s.token <- true
 }
 
-func unlock(){
-     token <- true
-}
-
-func getInt(key string) (int64, error){
-     lock()
-     defer unlock()
-     value, ok := kvStore[key]
+// getInt method returns int64 value for given key if
+// it is present
+func (s *kvStore) getInt(key string) (int64, error){
+     s.lock()
+     defer s.unlock()
+     value, ok := s.store[key]
      if !ok{
      	return 0, errors.New("Key was not found in the map")
      }
@@ -89,11 +114,12 @@ func getInt(key string) (int64, error){
      return i, err
 }
 
-
-func IncrEntry(key string) (ValueWrapper, error){
-     lock()
-     defer unlock()
-     value, ok := kvStore[key]
+// IncrEntry increments integer value for a given key by 1
+// if the value is present and it is of type integer
+func (s *kvStore) IncrEntry(key string) (ValueWrapper, error){
+     s.lock()
+     defer s.unlock()
+     value, ok := s.store[key]
      if !ok  {
      	return ValueWrapper{}, errors.New("Value not found")
      }
@@ -103,14 +129,16 @@ func IncrEntry(key string) (ValueWrapper, error){
      }     
      i = i + 1
      valueWrapper := ValueWrapper{strconv.FormatInt(i, base)}
-     kvStore[key] = valueWrapper
+     s.store[key] = valueWrapper
      return valueWrapper, err
 }
 
-func DecrEntry(key string) (ValueWrapper, error){
-     lock()
-     defer unlock()
-     value, ok := kvStore[key]
+// DecrEntry decrements integer value for a given key by 1
+// if the value is present and it is of type integer
+func (s *kvStore) DecrEntry(key string) (ValueWrapper, error){
+     s.lock()
+     defer s.unlock()
+     value, ok := s.store[key]
      if !ok {
      	return ValueWrapper{}, errors.New("Value not found")
      }
@@ -120,6 +148,6 @@ func DecrEntry(key string) (ValueWrapper, error){
      }     
      i = i - 1
      valueWrapper := ValueWrapper{strconv.FormatInt(i, base)}
-     kvStore[key] = valueWrapper
+     s.store[key] = valueWrapper
      return valueWrapper, err
 }

@@ -1,7 +1,7 @@
 package main
 
 import (
-       "github.com/pkhadilkar/sskv/server"
+       "github.com/pkhadilkar/kvstore/server"
        "github.com/ant0ine/go-json-rest"
        "net/http"
 )

@@ -18,6 +18,8 @@ type Content struct{
     Value string
 }
 
+// ALWAYS remember to close the http request and response body
+
 const serverBase = "http://localhost:9090/store"
 
 func Get(key string) (string, error) {
@@ -45,7 +47,8 @@ func Put(key string, value string) error {
      	return err
      }
      req.Header.Add("Content-type", "application/json")
-     _, err = client.Do(req)
+     r, err := client.Do(req)
+     defer r.Body.Close()
      return err
 }
 
@@ -55,7 +58,8 @@ func Delete(key string) error {
      	return err
      }
      client := &http.Client{}
-     _, err = client.Do(req)
+     r, err := client.Do(req)
+     defer r.Body.Close()
      return err
 }
 
