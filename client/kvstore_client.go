@@ -25,11 +25,11 @@ const serverBase = "http://localhost:9090/store"
 func Get(key string) (string, error) {
      var value Content
      r, err := http.Get(serverBase + "/" + url.QueryEscape(key))
-     defer r.Body.Close()
      if err != nil {
      	return value.Value, err
      }
-
+     // must come after checking that err is nil
+     defer r.Body.Close()
      decoder := json.NewDecoder(r.Body)
      decoder.Decode(&value)
      return value.Value, err
@@ -48,7 +48,9 @@ func Put(key string, value string) error {
      }
      req.Header.Add("Content-type", "application/json")
      r, err := client.Do(req)
-     defer r.Body.Close()
+     if err == nil {
+     	r.Body.Close()
+     }
      return err
 }
 
