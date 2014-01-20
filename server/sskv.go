@@ -15,6 +15,7 @@ package server
 import (
        "strconv"
        "errors"
+       "sync"
 )
 
 // Entry type represents a key value store entry.
@@ -40,7 +41,7 @@ const integerBits = 64
 
 type kvStore struct {
      store map[string]ValueWrapper
-     token chan bool
+     mutex sync.Mutex
 }
 
 // GetValue gets a value from map for a given key. 
@@ -89,12 +90,12 @@ func (s *kvStore) DeleteEntry(key string){
 // lock method allows only one thread to operate on map
 // at a time. Other concurrent threads block.
 func (s *kvStore) lock(){
-	<- s.token
+	s.mutex.Lock()
 }
 
 // unlock method releases lock
 func (s *kvStore) unlock(){
-     s.token <- true
+     s.mutex.Unlock()
 }
 
 // getInt method returns int64 value for given key if

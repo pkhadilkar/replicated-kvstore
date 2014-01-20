@@ -13,8 +13,6 @@ var s kvStore
 // Initialize method intializes internal data structures
 func Initialize() {
      s.store = make(map[string]ValueWrapper, 100000)
-     s.token = make(chan bool, 1)
-     s.token <- true
 }
 
 func GetEntryHandler(w *rest.ResponseWriter, r *rest.Request){

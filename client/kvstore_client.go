@@ -61,7 +61,9 @@ func Delete(key string) error {
      }
      client := &http.Client{}
      r, err := client.Do(req)
-     defer r.Body.Close()
+     if err == nil {
+     	r.Body.Close()
+     }
      return err
 }
 
@@ -69,11 +71,11 @@ func Delete(key string) error {
 func Decrement(key string) (string, error) {
      var value Content
      r, err := http.Get(serverBase + "/decr/" + url.QueryEscape(key))
-     defer r.Body.Close()
      if err != nil {
      	return value.Value, err
      }
 
+     defer r.Body.Close()
      decoder := json.NewDecoder(r.Body)
      decoder.Decode(&value)
      return value.Value, err     
@@ -84,11 +86,12 @@ func Decrement(key string) (string, error) {
 func Increment(key string) (string, error) {
      var value Content
      r, err := http.Get(serverBase + "/incr/" + url.QueryEscape(key))
-     defer r.Body.Close()
+     
      if err != nil {
      	return value.Value, err
      }
 
+     defer r.Body.Close()
      decoder := json.NewDecoder(r.Body)
      decoder.Decode(&value)
      return value.Value, err     
