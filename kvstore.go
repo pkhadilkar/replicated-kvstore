@@ -1,7 +1,7 @@
 package main
 
 import (
-       "github.com/pkhadilkar/kvstore/server"
+       "github.com/pkhadilkar/replicated-kvstore/server"
        "github.com/ant0ine/go-json-rest"
        "net/http"
 )
@@ -20,5 +20,5 @@ func main(){
 		)
      // initialize kvStore
      server.Initialize()
-     http.ListenAndServe(":9090", &handler)
+     http.ListenAndServe(":63000", &handler)
 }
