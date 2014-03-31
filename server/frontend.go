@@ -13,6 +13,7 @@ var s kvStore
 
 // Initialize method intializes internal data structures
 func Initialize() {
+	fmt.Println("Initializing")
 	s.store = make(map[string]ValueWrapper, 100000)
 	raftServers, err := CreateRaftCluster()
 	if err != nil {
@@ -20,6 +21,7 @@ func Initialize() {
 		return
 	}
 	s.raftLeader = getRaftLeader(raftServers)
+	fmt.Println("Initialization completed")
 }
 
 func GetEntryHandler(w *rest.ResponseWriter, r *rest.Request) {

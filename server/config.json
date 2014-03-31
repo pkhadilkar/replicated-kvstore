@@ -1,9 +1,0 @@
-{
-	"MemberRegSocket" : "127.0.0.1:9999",
-	"PeerSocket" :  "127.0.0.1:9009",
-	"TimeoutInMillis" : 1500,
-	"HbTimeoutInMillis": 150
-	"LogDirectoryPath" : "./logs"
-	"StableStoreDirectoryPath" : "./stable"
-	"RaftLogDirectoryPath" : "./LocalLog"
-}

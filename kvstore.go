@@ -4,6 +4,7 @@ import (
 	"github.com/ant0ine/go-json-rest"
 	"github.com/pkhadilkar/replicated-kvstore/server"
 	"net/http"
+	"fmt"
 )
 
 func main() {
@@ -17,6 +18,7 @@ func main() {
 		rest.Route{"GET", "/store/incr/:Key", server.IncrEntryHandler}, //change this to UPDATE?
 		rest.Route{"GET", "/store/decr/:Key", server.DecrEntryHandler},
 	)
+	fmt.Println("Calling initialize")
 	// initialize kvStore
 	server.Initialize()
 	http.ListenAndServe(":63000", &handler)

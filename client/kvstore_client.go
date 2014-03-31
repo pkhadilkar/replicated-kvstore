@@ -20,7 +20,7 @@ type Content struct {
 
 // ALWAYS remember to close the http request and response body
 
-const serverBase = "http://localhost:9090/store"
+const serverBase = "http://localhost:63000/store"
 
 func Get(key string) (string, error) {
 	var value Content

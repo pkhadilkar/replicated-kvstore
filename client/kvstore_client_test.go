@@ -7,12 +7,13 @@ import (
 	"strconv"
 	"sync"
 	"testing"
+	"time"
 )
 
 const lineseparator = "====================================="
 
 func TestKvstoreClient(t *testing.T) {
-
+	time.Sleep(5 * time.Second) // time for Raft cluster to choose the leader
 	fmt.Println("Put (\"Random person\", \"new phone\")")
 	fmt.Println(Put("Random person", "new phone."))
 	fmt.Println(lineseparator)
@@ -83,7 +84,7 @@ func TestKvstoreClient(t *testing.T) {
 	fmt.Println(lineseparator)
 }
 
-const clients = 1000
+const clients = 10
 
 var w sync.WaitGroup
 

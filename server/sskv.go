@@ -17,6 +17,7 @@ import (
 	"github.com/pkhadilkar/raft"
 	"strconv"
 	"sync"
+	"fmt"
 )
 
 // TODO: Add Raft replication check in {get/set}Int methods
@@ -60,8 +61,10 @@ func (s *kvStore) GetValue(key string) (ValueWrapper, bool) {
 
 // PutValue stores a given entry object in map
 func (s *kvStore) PutValue(e *Entry) {
+	fmt.Println("Received put request")
 	value := ValueWrapper{e.Value}
 	s.raftPut(e.Key, e.Value)
+	fmt.Println("Raft replication complete")
 	s.lock()
 	defer s.unlock()
 	s.store[e.Key] = value
